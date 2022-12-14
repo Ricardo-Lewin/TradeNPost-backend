@@ -8,8 +8,8 @@ require('./connection')
 const server = http.createServer(app);
 const {Server} = require('socket.io');
 const io = new Server(server, {
-    cors: '*',
-    methods: '*'
+    cors: 'http://localhost:3001',
+    methods: ['GET', 'POST', 'PATCH','DELETE']
 })
 
 
@@ -47,3 +47,5 @@ app.post('/create-payment', async(req, res) => {
 server.listen(8080, () => {
     console.log('server running at port', 8080)
 })
+
+app.set('socketio', io);
