@@ -18,7 +18,7 @@ router.post('/', async(req, res)=> {
     user.cart =  {total: 0, count: 0};
     user.orders.push(order);
 
-    const notification = {status: 'unread', message: `New order from ${user.name}`, time: new Date().toLocaleString()};
+    const notification = {status: 'unread', message: `New order from ${user.name}`, time: new Date().toLocaleString({ timeZone: 'UTC' })};
     io.sockets.emit('new-order', notification);
 
     user.markModified('orders');
@@ -53,7 +53,7 @@ router.patch('/:id/mark-shipped', async(req, res)=> {
     await Order.findByIdAndUpdate(id, {status: 'shipped'});
     const orders = await Order.find().populate('owner', ['email', 'firstName', 'lastName']);
 
-    const notification = {status: 'unread', message: `Order ${id} shipped with success`, time: new Date().toLocaleString()};
+    const notification = {status: 'unread', message: `Order ${id} shipped with success`, time: new Date().toLocaleString({ timeZone: 'UTC' })};
     io.sockets.emit("notification", notification, ownerId);
     user.notifications.unshift(notification);
     // https://www.mongodb.com/docs/v4.4/reference/method/db.collection.save/
