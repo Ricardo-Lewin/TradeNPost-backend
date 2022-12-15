@@ -28,7 +28,9 @@ app.use('/orders', orderRoutes);
 
 
 app.post('/create-payment', async(req, res) => {
-    const {amount} = req.body;
+    let {amount} = req.body;
+    let newAmount = amount * 100;
+    amount = newAmount;
     console.log(amount);
     try {
       const paymentIntent = await stripe.paymentIntents.create({
