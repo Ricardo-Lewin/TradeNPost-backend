@@ -1,9 +1,8 @@
 const router = require('express').Router();
 const User = require('../models/User');
-const Order = require('../models/Order');
+
 
 // signup 
-
 router.post('/signup', async(req, res) => {
     const {firstName, lastName, email, password} = req.body;
 
@@ -16,7 +15,6 @@ router.post('/signup', async(req, res) => {
 });
 
 // login
-
 router.post('/login', async(req, res) => {
     const {email, password} = req.body;
     try {
@@ -27,8 +25,7 @@ router.post('/login', async(req, res) => {
     }
 });
 
-// get users;
-
+// get users
 router.get('/', async(req, res) => {
     try {
         const users = await User.find({isAdmin: false}).populate('orders');
@@ -39,7 +36,6 @@ router.get('/', async(req, res) => {
 });
 
 // get user orders
-
 router.get('/:id/orders', async (req, res)=> {
     const {id} = req.params;
     try {
@@ -47,6 +43,22 @@ router.get('/:id/orders', async (req, res)=> {
       res.json(user.orders);
     } catch (e) {
       res.status(400).send(e.message);
+    }
+});
+
+// update user notifcations
+router.post('/:id/updateNotifications', async(req, res)=> {
+    const {id} = req.params;
+    try {
+      const user = await User.findById(id);
+      user.notifications.forEach((notification) => {
+        notification.status = "read"
+      });
+      user.markModified('notifications');
+      await user.save();
+      res.status(200).send();
+    } catch (e) {
+      res.status(400).send(e.message)
     }
 });
 
